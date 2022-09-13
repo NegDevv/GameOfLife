@@ -104,8 +104,6 @@ void Update(const std::vector<std::vector<Cell*>> &cells)
 }
 
 
-
-
 void FillCells(std::vector<std::vector<Cell*>> &cells)
 {
 	for (int i = 0; i < cells.size(); i++)
@@ -117,6 +115,17 @@ void FillCells(std::vector<std::vector<Cell*>> &cells)
 			c->populated = false;
 
 			cells[i][j] = c;
+		}
+	}
+}
+
+void DeleteCells(std::vector<std::vector<Cell*>>& cells)
+{
+	for (int i = 0; i < cells.size(); i++)
+	{
+		for (int j = 0; j < cells[0].size(); j++)
+		{
+			delete cells[i][j];
 		}
 	}
 }
@@ -356,7 +365,10 @@ int main()
 
 	std::chrono::time_point<std::chrono::steady_clock> totalStart, totalEnd, totalDuration;
 	
+	// Allocates cell memory
 	FillCells(cells);
+		
+
 	app.setFramerateLimit(0);
 
 
@@ -592,6 +604,9 @@ int main()
 		//using fmilli = std::chrono::duration<double, std::milli>;
 		//std::cout << "Total update duration: " << fmilli(totalEnd - totalStart).count() << "ms\n";
 	}
+
+	// Frees allocated cell memory
+	DeleteCells(cells);
 
 	return 0;
 }
