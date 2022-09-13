@@ -15,12 +15,12 @@ struct Timer
 
 	Timer()
 	{
-		start = std::chrono::high_resolution_clock::now();
+		start = std::chrono::steady_clock::now();
 	}
 
 	~Timer()
 	{
-		end = std::chrono::high_resolution_clock::now();
+		end = std::chrono::steady_clock::now();
 		duration = end - start;
 		float ms = duration.count() * 1000.0f;
 		std::cout << "Time: " << ms << "ms\n";
@@ -122,12 +122,16 @@ void FillCells(std::vector<std::vector<Cell*>> &cells)
 }
 
 
-void Setup(int& W, int& H)
+bool Setup(int& W, int& H)
 {
 	RenderWindow setup(VideoMode(500, 500), "GameOfLife");
 
 	Font font;
-	font.loadFromFile("Font/arial.ttf");
+	if (!font.loadFromFile("Font/arial.ttf"))
+	{
+		return false;
+	}
+	
 	Text promptText1;
 	promptText1.setFont(font);
 	promptText1.setString("Give window width in pixels:");
@@ -253,6 +257,8 @@ void Setup(int& W, int& H)
 		setup.display();
 
 	}
+
+	return true;
 }
 
 int main()
@@ -262,7 +268,14 @@ int main()
 
 	int W = windowWidth / 4, H = windowHeight / 4;
 
-	Setup(W, H);
+	if (!Setup(W, H))
+	{
+		std::cout << "Setup failed!";
+		std::cout << "Press any key to close this window...";
+		std::cin.clear();
+		std::cin.get();
+		return -1;
+	}
 	
 
 	RenderWindow app(VideoMode(W, H), "GameOfLife");
@@ -274,8 +287,15 @@ int main()
 	int updates = 0;
 
 	Texture popTex, unpopTex;
-	popTex.loadFromFile("Sprites/populated.png");
-	unpopTex.loadFromFile("Sprites/unpopulated.png");
+
+	if (!popTex.loadFromFile("Sprites/populated.png") || !unpopTex.loadFromFile("Sprites/unpopulated.png"))
+	{
+		app.close();
+		std::cout << "Press any key to close this window...";
+		std::cin.clear();
+		std::cin.get();
+		return -1;
+	}
 
 
 	Color Yellow(255, 255, 0, 255);
@@ -323,13 +343,13 @@ int main()
 	Vector2f zoomCenter(0, 0);
 
 	std::chrono::duration<float> duration;
-	std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::high_resolution_clock::now();
+	std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
 
 	std::vector<std::vector<Cell*> > cells(columns, std::vector<Cell*>(rows, nullptr)); // 2D Vector of Cell pointers
 
 	/*std::vector<std::vector<Cell*> > cells;
 	cells.reserve(columns* rows);*/
-	std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::high_resolution_clock::now();
+	std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
 	duration = end - start;
 	float ms = duration.count() * 1000.0f;
 	//std::cout << ms << "\n";
@@ -535,7 +555,7 @@ int main()
 								}
 								else
 								{
-									unpopulated.setColor(Color::Color(240, 240, 240, 255));
+									unpopulated.setColor(Color(240, 240, 240, 255));
 								}
 							}
 							else
