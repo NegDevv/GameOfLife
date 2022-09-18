@@ -4,9 +4,9 @@ Game Of Life cellular automaton simulation application with an interactable inte
 <img src="GameOfLifeWindow.png" alt="Influence map application window" width="250"/>
 
 # Instructions
-Ready to go statically linked Windows binary is available in the [bin](bin/) folder.
+**Ready to go statically linked Windows executable is available in the [bin](bin/) folder.**
 
-To run it the .exe file needs to be in the same folder as the Font and Sprite folders.
+To run it the GameOfLife.exe file needs to be in the same folder as the Font and Sprite folders.
 
 ## Setup
 
